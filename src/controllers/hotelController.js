@@ -241,8 +241,9 @@ export async function getRooms(req, res) {
       )
     );
 
-    // 🔹 Lấy danh sách phòng kèm thông tin booking nếu có
-    const [rows] = await pool.query(`
+    // 🔹 Truy vấn danh sách phòng
+    const [rows] = await pool.query(
+      `
       SELECT 
         r.id, 
         r.name, 
@@ -251,6 +252,7 @@ export async function getRooms(req, res) {
         r.available, 
         r.is_locked, 
         r.lock_reason,
+        r.day,
         b.id AS booking_id,
         b.status AS booking_status,
         b.checkin,
@@ -260,13 +262,13 @@ export async function getRooms(req, res) {
         ON b.room_id = r.id
         AND b.hotel_id = r.hotel_id
         AND b.status = 'booked'
-        AND (
-          (b.checkin <= ? AND b.checkout >= ?)  -- Kiểm tra trùng khoảng ngày người chọn
-        )
+        AND (b.checkin <= ? AND b.checkout >= ?)
       WHERE r.hotel_id = ?
+        AND r.day BETWEEN ? AND ?
       ORDER BY r.id ASC
-      `, [checkout, checkin, hotelId]);
-
+      `,
+      [checkout, checkin, hotelId, checkin, checkout] // 🟢 5 tham số
+    );
 
     // 🔹 Chuyển dữ liệu
     const data = rows.map((r) => ({
@@ -282,12 +284,8 @@ export async function getRooms(req, res) {
       booking_id: r.booking_id,
     }));
 
-    // 🔹 Log kiểm tra (chỉ in 3 dòng đầu)
     console.log("📦 getRooms result sample:", data.slice(0, 3));
-
-    // 🔹 Trả kết quả ra frontend
     res.json({ ok: true, nights, rooms: data });
-
   } catch (err) {
     console.error("❌ Lỗi getRooms:", err);
     res.status(500).json({ ok: false, message: "Server error" });
