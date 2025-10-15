@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= hotel.name %> – Lịch đặt phòng</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="bar-left">
+        <div class="metric">
+          <div class="label">NGÀY</div>
+          <div class="value" id="nights">0 Đêm</div>
+        </div>
+        <div class="metric">
+          <div class="label">Check-in</div>
+          <div class="value" id="ci">--</div>
+        </div>
+        <div class="metric">
+          <div class="label">Check-out</div>
+          <div class="value" id="co">--</div>
+        </div>
+
+        <!-- ✅ Thêm hiển thị tổng tiền -->
+        <div class="metric">
+          <div class="label">TỔNG</div>
+          <div class="value" id="total">--</div>
+        </div>
+      </div>
+
+      <!-- LOGO GIỮA HEADER -->
+      <div class="logo-center">
+        <img src="/images/Logo (2).png" alt="Stay Toki" style="height:50px;">
+      </div>
+
+      <div class="bar-right">
+        <div class="metric">
+          <div class="label">PHÒNG</div>
+          <div class="value" id="rooms">1</div>
+        </div>
+        <div class="metric">
+          <div class="label">NG.LỚN</div>
+          <div class="value">2</div>
+        </div>
+        <div class="metric">
+          <div class="label">TRẺ EM</div>
+          <div class="value">0</div>
+        </div>
+        <button id="search" class="btn">Tìm kiếm</button>
+      </div>
+    </header>
+
+      <div class="back-container">
+        <button class="btn-back" onclick="window.open('http://localhost:8080/toki/', '_self')">← Quay lại Stay Toki</button>
+
+      </div>
+
+
+    <main class="container">
+      <h1>Stay Toki</h1>
+
+      <div class="calendar-wrapper">
+        <!-- Nút TRƯỚC -->
+        <button class="nav-btn nav-prev" id="prev">&#8592;</button>
+
+        <!-- Hai lịch nằm giữa -->
+        <div id="calendars" class="calendars"></div>
+
+        <!-- Nút SAU -->
+        <button class="nav-btn nav-next" id="next">&#8594;</button>
+      </div>
+    </main>
+
+    <script>
+      window.__HOTEL__ = { code: "<%= hotel.code %>" };
+    </script>
+    <script src="/calendar.js"></script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kiểm tra phòng</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+
+      <!-- 🟢 Nút quay lại -->
+      <a href="http://localhost:3000/booking/hotel/BeHome?hotel_code=537T72" class="back-button">← Trở lại</a>
+
+
+      <h1>Kiểm tra phòng</h1>
+
+      <h2>
+        Phòng trống từ <span id="ci">--</span> đến <span id="co">--</span>
+      </h2>
+
+      <div class="summary">
+        <p>Số đêm: <span id="nights">0</span></p>
+      </div>
+      
+      <div id="room-list" class="room-list">Đang kiểm tra...</div>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const ci = params.get("checkin");
+      const co = params.get("checkout");
+      const rooms = params.get("rooms") || 1;
+      const code = "537T72"; // 👈 mã khách sạn cố định (nếu bạn có nhiều, truyền từ URL sau cũng được)
+
+      document.getElementById("ci").textContent = ci || "--";
+      document.getElementById("co").textContent = co || "--";
+
+      async function loadRooms() {
+      // Dòng gọi dữ liệu phòng
+      const res = await fetch(
+        `/booking/api/hotels/${code}/rooms?checkin=${ci}&checkout=${co}&rooms=${rooms}`
+      );
+
+        const data = await res.json();
+
+        console.log("📦 Rooms data:", data); // ✅ log ra console để bạn chụp lại
+
+        const list = document.getElementById("room-list");
+
+        // ⚠️ nếu backend lỗi hoặc không có phòng
+        if (!data.ok || !data.rooms || !data.rooms.length) {
+          list.innerHTML = `<p>Không có phòng trống</p>`;
+          return;
+        }
+
+        document.getElementById("nights").textContent = data.nights || 0;
+
+        list.innerHTML = data.rooms
+          .map((r) => {
+            const price = r.price ? Number(r.price) : 0;
+            const total = r.total ? Number(r.total) : 0;
+
+            return `
+              <div class="room" style="margin-bottom:16px;">
+                ${
+                  r.image
+                    ? `<img src="${r.image}" style="width:300px;border-radius:8px;margin-bottom:8px;">`
+                    : ""
+                }
+                <h3>${r.name || "Phòng không tên"}</h3>
+                <p>Giá/đêm: <b>${price.toLocaleString("vi-VN")} ₫</b></p>
+                <p>Tổng: <b>${total.toLocaleString("vi-VN")} ₫</b></p>
+
+                ${
+                  r.is_locked
+                    ? `<p class="lock-msg">🚫 Không thể đặt (${r.lock_reason || "Phòng bị khóa"})</p>`
+                    : r.is_booked
+                    ? `<button class="btn btn-cancel" style="background:#888" onclick="cancelBooking(${r.booking_id})">Hủy phòng</button>`
+                    : `<button class="btn btn-book" style="background:#d00" onclick="bookNow(${r.id})">Đặt ngay</button>`
+                }
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      loadRooms();
+
+      async function bookNow(roomId) {
+        const body = {
+          room_id: roomId,
+          checkin: ci,
+          checkout: co,
+          guest_name: "Nguyen Van A",
+          guest_email: "a@gmail.com",
+        };
+
+      // Dòng đặt phòng
+      const res = await fetch(`/booking/api/hotels/${code}/book-room`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+
+        const data = await res.json();
+        alert(data.message || data.error);
+        if (data.ok) loadRooms();
+      }
+
+      async function cancelBooking(bookingId) {
+        if (!confirm("Bạn có chắc muốn hủy phòng này không?")) return;
+
+      // Dòng hủy phòng
+      const res = await fetch("/booking/api/cancel-booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingId }),
+      });
+
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) location.reload();
+      }
+    </script>
+  </body>
+</html>

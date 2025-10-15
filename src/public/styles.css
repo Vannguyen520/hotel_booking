@@ -1,0 +1,410 @@
+:root {
+  --bg: #f7f5f2;
+  --card: #fff;
+  --text: #2b2b2b;
+  --muted: #8b857c;
+  --brand: #7a5b2e;
+  --accent: #c62828;
+  --line: #e7e2db;
+  --chip: #ede2cf;
+}
+
+/* ===== RESET & GLOBAL ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 "Segoe UI", sans-serif;
+}
+
+/* ===== HEADER / TOPBAR ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+.bar-left,
+.bar-right {
+  display: flex;
+  align-items: center;
+}
+
+.metric {
+  margin-right: 18px;
+}
+
+.metric .label {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.metric .value {
+  font-weight: 700;
+}
+
+/* LOGO cố định giữa header */
+.logo-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo-center img {
+  max-height: 50px;
+  display: block;
+}
+
+/* ===== BUTTON ===== */
+.btn {
+  border: none;
+  border-radius: 8px;
+  background: #b61c2b;
+  color: #fff;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: #8e1623;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 1080px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+h1 {
+  font-size: 24px;
+  margin: 8px 0 18px;
+  text-align: center;
+}
+
+/* ===== CALENDAR WRAPPER ===== */
+.cal-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.calendars {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 50px; /* cách xa hơn một chút */
+  width: 100%;
+  max-width: 1400px; /* ✅ tăng tổng khung chứa */
+  margin: 0 auto;
+}
+
+/* ===== CALENDAR BOX ===== */
+.calendar {
+  flex: 1;
+  min-width: 520px; /* ✅ tăng từ 460 lên 520 */
+  max-width: 580px; /* ✅ mở rộng thêm chiều ngang */
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px; /* thêm không gian trong */
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease-in-out;
+}
+
+.calendar:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ===== WEEKDAY ROW ===== */
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* ===== DATE GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ===== DATE CELL ===== */
+.cell {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  height: 85px;              /* ✅ giữ chiều cao cố định, không vỡ */
+  padding: 6px 8px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Ngày */
+.cell .d {
+  font-weight: 700;
+  font-size: 16px;
+  text-align: left;
+}
+
+/* Giá tiền */
+.cell .p {
+  font-size: 11px;        /* 🔽 Giảm từ 13px → 11px */
+  color: #777;            /* Màu nhẹ hơn một chút để không nổi quá */
+  text-align: right;      /* Căn phải giữ nguyên */
+  font-weight: 500;
+  line-height: 1.2;       /* Giảm khoảng cách giữa các dòng */
+  opacity: 0.9;           /* Làm mềm hiển thị */
+}
+
+
+/* Hover */
+.cell:hover {
+  transform: scale(1.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== STATES ===== */
+.cell.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.cell.disabled {
+  background-color: #ffeaea;
+  border-color: #e57373;
+  position: relative;
+}
+
+.cell.disabled::after {
+  content: "Hết phòng";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  text-align: center;
+  font-size: 12px;
+  color: #c62828;
+  font-weight: 600;
+}
+
+/* Ngày chọn */
+.cell.start,
+.cell.end {
+  background: #7a5b2e;
+  color: #fff;
+  border-color: #7a5b2e;
+}
+
+/* Trong khoảng chọn */
+.cell.inrange {
+  background: #f2e8da;
+}
+
+/* Preview */
+.cell.preview {
+  outline: 2px dashed #aaa;
+}
+
+/* ===== FOOTER / TOTAL ===== */
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.total {
+  font-weight: 800;
+  color: #2e7d32;
+}
+
+/* ===== ROOM LIST ===== */
+.room-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.room {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  width: 320px;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.btn-back {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background: var(--brand);
+  color: white;
+}
+
+/* ===== LOCK MESSAGE ===== */
+.lock-msg {
+  color: #b71c1c;
+  font-weight: 600;
+  background: #fdecea;
+  border: 1px solid #f5c6cb;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 980px) {
+  .calendar {
+    min-width: 320px;
+    max-width: 360px;
+  }
+
+  .grid {
+    gap: 6px;
+  }
+
+  .cell {
+    height: 70px;
+    font-size: 13px;
+  }
+
+  .cell .d {
+    font-size: 14px;
+  }
+
+  .cell .p {
+    font-size: 11px;
+  }
+}
+
+/* ===== NÚT CHUYỂN LỊCH ===== */
+.calendar-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Nút chung */
+/* ====== Nút chuyển lịch (Prev / Next) ====== */
+.nav-btn {
+  position: fixed;              /* ✅ cố định vị trí khi cuộn */
+  top: 50%;                     /* căn giữa chiều cao màn hình */
+  transform: translateY(-50%);  /* căn giữa chính xác */
+  z-index: 999;                 /* nằm trên cùng */
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* ✅ hiệu ứng bóng */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Bên trái */
+.nav-prev {
+  left: 40px; /* cách mép trái */
+}
+
+/* Bên phải */
+.nav-next {
+  right: 40px; /* cách mép phải */
+}
+
+/* Hiệu ứng khi hover */
+.nav-btn:hover {
+  background-color: #f8f8f8;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Responsive cho màn nhỏ hơn */
+@media (max-width: 1200px) {
+  .nav-prev {
+    left: 20px;
+  }
+
+  .nav-next {
+    right: 20px;
+  }
+}
+
+/* cancel button */
+.cancel-btn {
+  background-color: #b91c1c;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #7f1d1d;
+}
+
+.back-button {
+  display: inline-block;
+  margin-bottom: 15px;
+  background-color: #f3f3f3;
+  color: #333;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.back-button:hover {
+  background-color: #e74c3c;
+  color: #fff;
+}
